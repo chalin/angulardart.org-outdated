@@ -171,15 +171,15 @@ to open the <strong>Chapter_02</strong> directory. </p>
   publishAs: 'ctrl')
 </pre>
 
-  <p>This annotation tells Angular that the class <code>RecipeBookController</code> is an Angular controller. When the compiler sees one of these in the DOM, it instantiates the controller class.</p>
+  <p>This annotation tells Angular that the class <code>RecipeBookController</code> is an Angular controller. </p>
 
   <p>Controllers are configured by setting properties on the annotation. Here we describe the most common properties.</p>
 
   <h5 id="selector"><code>selector</code></h5>
-  <p>The required <code>selector</code> field defines the CSS selector that will trigger the controller. It can be any valid CSS selector which does not cross element boundaries.</p>
+  <p>The required <code>selector</code> field defines the CSS selector that will trigger the controller. It can be any valid CSS selector which does not cross element boundaries. When Angular comes across an element matched by the selector in the DOM, it instantiates the controller class.</p>
 
   <h5 id="publishas"><code>publishAs</code></h5>
-  <p>The <code>publishAs</code> field specifies that the controller instance should be assigned to the current scope under the name specified. The controller’s public fields are available for data binding from the view through the <code>publishAs</code> name. Similarly, the controller’s public methods can be invoked from the view using the <code>publishAs</code> name. Here is an example:</p>
+  <p>Specifies that the controller instance should be assigned to the current scope under the given name. The controller’s public fields are available for data binding from the view through the <code>publishAs</code> name. Similarly, the controller’s public methods can be invoked from the view using the <code>publishAs</code> name. Here is an example:</p>
 
   <pre class="prettyprint">
 &lt;div>&lt;strong&gt;Name: &lt;/strong&gt;{{ctrl.selectedRecipe.name}}&lt;/div&gt;
@@ -187,7 +187,7 @@ to open the <strong>Chapter_02</strong> directory. </p>
 &lt;li ng-click="ctrl.selectRecipe(recipe)"&gt;{{recipe.name}}&lt;/li&gt;
 </pre>
 
-    <p>Here we also see how to tell the Angular bootstrapping code about our custom types. Angular uses dependency injection to instantiate the application classes you create. Inside the <a href="http://ci.angularjs.org/view/Dart/job/angular.dart-master/javadoc/angular.html#ngBootstrap"><code>ngBootstrap</code></a> method, a new <a href="http://ci.angularjs.org/view/Dart/job/angular.dart-master/javadoc/angular/AngularModule.html"><code>AngularModule</code></a> is created. The <code>AngularModule</code> provides all of Angular’s built in services and directives. Your app’s module is added to the list of modules that Angular loads.</p>
+    <p>The <code>MyAppModule</code> class illustrates how to tell the Angular bootstrapping code about our custom types. Angular uses <a href="http://en.wikipedia.org/wiki/Dependency_injection">dependency injection</a> to instantiate the application classes you create. Inside the <a href="http://ci.angularjs.org/view/Dart/job/angular.dart-master/javadoc/angular.html#ngBootstrap"><code>ngBootstrap()</code></a> method, a new <a href="http://ci.angularjs.org/view/Dart/job/angular.dart-master/javadoc/angular/AngularModule.html"><code>AngularModule</code></a> is created. The <code>AngularModule</code> provides all of Angular’s built in services and directives. Your app’s module is added to the list of modules that Angular loads.</p>
 
 <pre class="prettyprint">class MyAppModule extends Module {
   MyAppModule() {
@@ -195,12 +195,12 @@ to open the <strong>Chapter_02</strong> directory. </p>
   }
 }
 
-main() {
+void main() {
   ngBootstrap(module: new MyAppModule());
 }</pre>
 
 
-    <p>Including your controller class in the module allows Angular to instantiate the controller we just created.</p>
+    <p>Including your controller class in the module,  through a call to the <code>type()</code> method, allows Angular to instantiate the controller we just created.</p>
 
     <p>From the view, we can use the controller by adding a set of attributes to the element which will trigger the CSS selector declared on the controller:</p>
 
@@ -227,10 +227,10 @@ main() {
 &lt;/ul&gt;
 </pre>
 
-  <p>The <code>ng-repeat</code> directive on the li element causes Angular to iterate over the model (the recipes property in the RecipeBookController), and clone the li in the compiled DOM for each recipe in the list. Each li is created with its own scope and its own instance of the recipe property. If the model changes (for example, if a recipe is added to or deleted from the model), the <code>ng-repeat</code> tag re-evaluates the model and updates the view automatically.</p>
+  <p>The <code>ng-repeat</code> directive on the <code>li</code> element causes Angular to iterate over the model (the <code>recipes</code> property in the <code>RecipeBookController</code>), and clone the <code>li</code> in the compiled DOM for each recipe in the list. Each <code>li</code> is created with its own scope and its own instance of the <code>recipe</code> property. If the model changes (for example, if a recipe is added to or deleted from the model), the <code>ng-repeat</code> tag re-evaluates the model and updates the view automatically.</p>
 
   <h4 id="ng-click"><code>ng-click</code></h4>
-  <p><code>ng-click</code> is a built-in Angular directive that allows you to specify custom behavior when any element is clicked. In our example, it invokes the <code>selectRecipe()</code> method on the controller, passing it the recipe property from the view.</p>
+  <p>Is a built-in Angular directive that allows you to specify custom behavior when an element is clicked. In our example, it invokes the <code>selectRecipe()</code> method on the controller, passing it the <code>recipe</code> property from the view.</p>
 
   <ul class="pager">
     <li class="previous"><a href="03-ch01-creating-your-first-app.html">&laquo; Prev</a></li>
