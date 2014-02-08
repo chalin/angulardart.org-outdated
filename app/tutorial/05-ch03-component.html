@@ -153,7 +153,7 @@ PENDING: We should add screenshots here.
   <h3 id="angular-components">Angular components</h3>
   <p>The rating feature is an Angular component,
 implemented using the
-<a href="http://ci.angularjs.org/view/Dart/job/angular.dart-master/javadoc/angular.core/NgComponent.html">NgComponent</a> annotation.
+<a href="http://ci.angularjs.org/view/Dart/job/angular.dart-master/javadoc/angular.core/NgComponent.html"><code>@NgComponent</code></a> annotation.
 Components are lightweight, reusable, self-contained UI components
 that have a single specific purpose.
 The rating component is a great example of a
@@ -166,7 +166,7 @@ We could use this component in any app to rate anything.</p>
 
   <h4 id="using-components-from-your-app">Using components from your app</h4>
   <p>Using a component from your app is simple.
-Just create an HTML element with the name of the component,
+Just create an HTML element that matches the component&rsquo;s selector (which is usually a custom element name),
 and pass any required properties in as HTML attributes.
 Here is how our Recipe Book app uses the rating component.</p>
 
@@ -179,8 +179,8 @@ Here is how our Recipe Book app uses the rating component.</p>
   <h4 id="creating-components">Creating components</h4>
   <p>Creating a component is similar to creating a controller.
 To create a component, simply create a class and
-add the <code>NgComponent</code> annotation.
-Here is the annotation for our rating component:</p>
+add the <code>@NgComponent</code> annotation.
+Here is the annotation for our rating component (see <strong>lib/rating/rating_component.dart</strong>):</p>
 
   <pre class="prettyprint">@NgComponent(
     selector: 'rating',
@@ -194,11 +194,11 @@ class RatingComponent {...}
   <p>Let’s look at those properties in more detail.</p>
 
   <h5 id="selector"><code>selector</code></h5>
-  <p>The <code>selector</code> property of NgComponent serves the same purpose as
+  <p>The <code>selector</code> property of <code>@NgComponent</code> serves the same purpose as
 the selector property in a controller.
 It tells Angular which CSS selector should trigger the component.
 By convention, selectors for components are element names, not attributes
-(notice the lack of [] chars around the selector).
+(notice the lack of <code>[]</code> chars around the selector).
 This is because you can only specify one component on any html element.
 By contrast, you can specify more than one controller on an element.</p>
 
@@ -206,19 +206,24 @@ By contrast, you can specify more than one controller on an element.</p>
 how controllers and components selectors are declared,
 and how they’re used in the HTML template.</p>
 
-  <!-- PENDING: The following code is a little weird. Make it a table? -->
-  <pre class="prettyprint">@NgComponent(
-    selector: 'rating',
-
-&lt;rating&gt;&lt;/rating&gt;
-
-@NgController(
-    selector: '[recipe-book]',
-
-&lt;div recipe-book&gt;
-    ...
-&lt;/div&gt;
-</pre>
+  <table>
+    <tr>
+      <th>Annotation</th>
+      <th>HTML</th>
+    </tr>
+    <tr>
+      <td><pre class="prettyprint">@NgComponent(selector: 'rating', ...)</pre></td>
+      <td><pre class="prettyprint">&lt;rating&gt;&lt;/rating&gt;</pre></td>
+    </tr>
+    <tr>
+      <td><pre class="prettyprint">
+@NgController(selector: '[recipe-book]', ...)
+</pre></td>
+      <td><pre class="prettyprint">&lt;div recipe-book&gt;...&lt;/div&gt;
+</pre></td>
+    </tr>
+  </table>
+  <p>&nbsp;</p>
 
   <h5 id="templateurl-and-cssurl"><code>templateUrl</code> and <code>cssUrl</code></h5>
   <p>Since components are self contained,
@@ -245,7 +250,7 @@ Your app has no direct visibility into the internals of the component.</p>
 &lt;/span&gt;
 </pre>
 
-  <p><code>rating</code> here refers to the properties and methods on a RatingComponent object.</p>
+  <p><code>cmp</code> here refers to the properties and methods on a <code>RatingComponent</code> object.</p>
 
   <p>A few other properties can be set on a component annotation,
 but these are the most important.
@@ -255,7 +260,7 @@ We will cover some of the less common ones in later chapters.</p>
 
   <h4 id="defining-attributes">Defining attributes</h4>
 
-  <p>Recall how our Recipe Book app uses the rating component:</p>
+  <p>Recall how our Recipe Book app uses the rating component (<strong>web/index.html</strong>):</p>
 
   <pre class="prettyprint">
 &lt;rating max-rating="5" rating="ctrl.selectedRecipe.rating"&gt;&lt;/rating&gt;
@@ -263,7 +268,7 @@ We will cover some of the less common ones in later chapters.</p>
 
   <p>To specify which HTML attributes correspond to which properties
 of the component,
-the RatingComponent class uses annotations like the following:</p>
+the <code>RatingComponent</code> class uses annotations like the following:</p>
 
 <pre class="prettyprint">@NgTwoWay(‘rating’)
 int rating;
@@ -273,8 +278,7 @@ set maxRating(String value) {...}
 </pre>
 
   <p>The argument to the annotation
-specifies the HTML attribute name—for example,
-“rating” or “max-rating”.
+specifies the HTML attribute name—for example, <code>rating</code> or <code>max-rating</code>.
 Following HTML rules, the attribute name is case insensitive,
 with dashes to separate words.</p>
 
@@ -282,58 +286,46 @@ with dashes to separate words.</p>
 to be evaluated:</p>
 
   <dl>
-    <dt> <a href="http://ci.angularjs.org/view/Dart/job/angular.dart-master/javadoc/angular.core/NgAttr.html">NgAttr</a> </dt>
-      <dd><p>
-          Sets the property to the value of the attribute,
-          interpolating if it contains {{}} .
-          Our example had this: <code>max-rating="5"</code>.
-          You could also get the value from the controller by doing something like
-         <code>max-rating="{{ctrl.someProperty}}"</code>.</p>
-
+    <dt> <a href="http://ci.angularjs.org/view/Dart/job/angular.dart-master/javadoc/angular.core/NgAttr.html">@NgAttr</a> </dt>
+      <dd>
           <p>
-              NgAttr attributes are unidirectional.
+          Informs Angular that the <code>maxRating</code> property is to be set to the <em><strong>string</strong> value</em> of the named attribute,
+          interpolating the string if it contains <code>{{}}</code> .
+          Our example had this: <code>max-rating="5"</code>.         You can also set the attribute value from the controller by doing something like</p>
+          <pre class="prettyprint">max-rating="{{ctrl.someProperty}}"</pre>
+          <p>In such a case, updates to <code>ctrl.someProperty</code> will cause  the value of <code>max-rating</code> to be updated, which will then be propagated to <code>maxRating</code>. 
+              <code>@NgAttr</code> attributes are <em>unidirectional</em>.
               A copy of the attribute is passed to the component,
               and each instance of the component has its own copy.
               The component can change its local value of the property
-              without changing the value outside the component.
-          </p>
+          without changing the value outside the component. </p>
       </dd>
 
-    <dt> <a href="http://ci.angularjs.org/view/Dart/job/angular.dart-master/javadoc/angular.core/NgOneWay.html">NgOneWay</a> </dt>
+    <dt> <a href="http://ci.angularjs.org/view/Dart/job/angular.dart-master/javadoc/angular.core/NgOneWay.html">@NgOneWay</a> </dt>
     <dd>
       <p>
-  Evaluates the attribute's value as an expression
-  and passes the result to the component.
-  You can use any valid expression—for example,
-  <code>"foo + bar"</code> would
+  Instructs Angular to evaluate the attribute's value as an <em>Angular <strong>expression</strong></em> and to pass the result to the component.
+  You can use any valid expression—for example, <code>"foo + bar"</code> would
   pass the result of <code>foo + bar</code> to the component.
-      </p>
-
-<p>
-  NgOneWay attributes are unidirectional.
+      
+  <code>@NgOneWay</code> attributes are <em>unidirectional</em>.
   The component's property changes if the expression's value changes,
   but changing the component's property has
-  no effect outside the component.
-</p>
+  no effect outside the component. </p>
     </dd>
 
-    <dt> <a href="http://ci.angularjs.org/view/Dart/job/angular.dart-master/javadoc/angular.core/NgTwoWay.html">NgTwoWay</a> </dt>
+    <dt> <a href="http://ci.angularjs.org/view/Dart/job/angular.dart-master/javadoc/angular.core/NgTwoWay.html">@NgTwoWay</a> </dt>
     <dd>
       <p>
-  Evaluates the expression, passes the result to the component,
-  and keeps the expression and property value in sync.
-  Our example set an NgTwoWay attribute using this code:
-  <code>rating="ctrl.selectedRecipe.rating"</code>
-</p>
-
-<p>
-  NgTwoWay is bidirectional.
-  When a component changes the value of an NgTwoWay-annotated property,
+  Instructs Angular to evaluate the attribute's value as an <strong><em>expression</em></strong>, pass the result to the component,
+  and keep the expression and property value in sync.
+  For this to be possible, the expression must represent an expression that can be <em><strong>assigned to</strong></em>, like a controller settable property. Our example set an <code>@NgTwoWay</code> attribute using this code: <code>rating="ctrl.selectedRecipe.rating"</code>. As the name implies, 
+  <code>@NgTwoWay</code> is <em>bidirectional</em>.
+  When a component changes the value of an <code>@NgTwoWay</code>-annotated property,
   the value outside of the component changes, as well.
   In this way, components can change model objects in your app.
   In our example, the rating component changes the rating on
-  your RecipeBook’s model objects.
-</p>
+  your <code>RecipeBook</code>’s model objects. </p>
 
     </dd>
   </dl>
